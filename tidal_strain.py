@@ -2,6 +2,7 @@ import numpy as np
 import astropy.units as u
 from astropy.time import Time
 from dataclasses import dataclass
+from tqdm import tqdm
 
 from constants import MU, SHIDA_L2, G_SURFACE
 from detectors import get_detector
@@ -29,7 +30,7 @@ def compute_timeseries(detector_name: str, bodies: list[str], times: Time, ephem
     det = get_detector(detector_name)
     ux, uy = det.ux_ecef, det.uy_ecef
     out = []
-    for t in times:
+    for t in tqdm(times, desc=f"{detector_name}: computing tidal strain", unit="step"):
         epsx = epsy = 0.0
         for b in bodies:
             mu = MU[b].to_value(u.m**3/u.s**2)
